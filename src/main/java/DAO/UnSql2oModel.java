@@ -31,11 +31,14 @@ public class UnSql2oModel {//MANAGER DAO ?
      *
      * @param ds
      */
-    public UnSql2oModel(DataSource ds){
+    public UnSql2oModel(){
+        String url = "jdbc:h2:./listout";
+        JdbcDataSource datasource = new JdbcDataSource();
+        datasource.setURL(url);
+        DataSource ds = datasource;
         this.sql2o = new Sql2o(ds);
-        //this.sql2o = sql2o;
     }
-
+    
     /**
      *
      * @param table
