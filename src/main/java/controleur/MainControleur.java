@@ -7,6 +7,7 @@ import model.LaListe;
 import DAO.UnSql2oModel;
 import model.Tag;
 import org.apache.log4j.BasicConfigurator;
+import service.UtilService;
 
 import java.io.File;
 import java.io.OutputStreamWriter;
@@ -30,85 +31,42 @@ public class MainControleur {
     //
     UnSql2oModel model;
 
-    /*public MainControleur(Sql2oModel model, ListeComposite l,List<Element> list_e) {
-        this.model = model;
-        this.list_e = list_e;//model.getAllElement();
-        this.l = l;//model.getListeComposite(1);
-    }*/
+    UtilService utilService;
 
-    /**
-     *
-     * @param modelsql
-     * @param liste
-     */
     public MainControleur(UnSql2oModel modelsql, LaListe liste) {
         this.list_e = liste;
         this.model = modelsql;
     }
 
-    /**
-     *
-     * @param args
-     * @throws Exception
-     */
+
     public void main(String[] args) throws Exception {
         BasicConfigurator.configure();
-        log4jConf.log.info("This is Logger Info");
-
-        System.out.println("**********************************************************************\n**********************************************************************");
-        System.out.println("\t\t\t\t\t\tLISTOUT DEMARRAGE :");
-        System.out.println("**********************************************************************\n**********************************************************************");
-
-        /*----config---- :*/
-        port(8080); // Spark will run on port 8080
-        //Thread
+        port(8080);
         int maxThreads = 10;
         int minThreads = 1;
         int timeOutMillis = 30000;
         threadPool(maxThreads, minThreads, timeOutMillis);
-        //Initialisation
-        //awaitInitialization(); // Wait for server to be initialized
-        //SSL/HTTPS
-        //String keyStoreLocation = "javax.net.ssl.keyStore";//"deploy/keystore.jks";
-        //String keyStorePassword = "password";
-        //secure(keyStoreLocation, keyStorePassword, null, null);
-
-        // root is 'src/main/resources', so put files in 'src/main/resources/public'
         staticFiles.expireTime(600); // ten minutes
-
-        configuration = new Configuration(Configuration.VERSION_2_3_19);//new Configuration(new Version(2, 3, 0));
-        configuration.setDirectoryForTemplateLoading(new File("src/main/ressources"));//MainControleur.class, "/"//new File("src/main/ressources/")
-        //configuration.setClassForTemplateLoading(MainControleur.class, "src/main/ressources");
+        configuration = new Configuration(Configuration.VERSION_2_3_19);
+        configuration.setDirectoryForTemplateLoading(new File("src/main/ressources"));
         configuration.setDefaultEncoding("UTF-8");
         configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
         configuration.setLogTemplateExceptions(false);
-
         externalStaticFileLocation("src/main/ressources");
-        /*--------------*/
 
-        // Les routes :
+        this.utilService = new UtilService();
+
+        /**
+         * routes
+         */
         get("/", (request, response) -> {
             response.redirect("/accueil");
-            return "!!";
+            return null;
         });
-        //before("/*", (q, a) -> log.info("Received api call"));
 
         path("/", () -> {
-        /*--------------------------------------------------------------------------------------------------------------------------------------------*/
-            get("/accueil", (request, response) -> {
-                StringWriter writer = new StringWriter();
-                Map<String, Object> attributes = new HashMap<>();
-                try {
-                    // TODO Auto-generated method stub
-                    //Template template = render("templates/accueil.ftl", null);//configuration.getTemplate("accueil.ftl");//
-                    Template template = configuration.getTemplate("templates/accueil.ftl");
-                    template.process(null, writer);
-                    //template.dump(writer);
-                } catch (Exception e) {
-                    // TODO: handle exception
-                    e.printStackTrace();
-                }
-                return writer;
+           get("/accueil", (request, response) -> {
+                return this.utilService.getAcceuil(this.configuration);
             });
             /*--------------------------------------------------------------------------------------------------------------------------------------------*/
             get("/info", (request, response) -> {
@@ -186,7 +144,6 @@ public class MainControleur {
                     StringWriter writer = new StringWriter();
                     String recherche = request.queryParams("search");
                     Map<String, List<AListe>> params = new HashMap<>();
-                    System.err.println("xxx"+recherche);
                     List<AListe> le = model.recherche(recherche);
                     params.put("liste_e", le);
                     params.put("liste_e_fils", null);
@@ -284,7 +241,6 @@ public class MainControleur {
                         list_e.setListe(model.getAllElement());//update de la liste
                         StringWriter writer = new StringWriter();
                         String s = replacePasInt(request.params(":name"));
-                        //System.err.println("66> "+s);
                         int i = -3;i = Integer.parseInt(replacePasInt(s));//request.params(":name")
                         AListe ee;ee = model.getElement(i);
                         Map<String, List<AListe>> params = new HashMap<>();
@@ -499,7 +455,6 @@ public class MainControleur {
             try {
                 Template template = configuration.getTemplate("templates/header.ftl");//render("accueil.ftl", model);
                 template.process(null, writerh);
-                //System.out.println(writerh);
             } catch (Exception e) {
                 // TODO: handle exception
                 e.printStackTrace();
@@ -507,7 +462,6 @@ public class MainControleur {
             try {
                 Template template = configuration.getTemplate("templates/footer.ftl");//render("accueil.ftl", model);
                 template.process(null, writerf);
-                //System.out.println(writerf);
             } catch (Exception e) {
                 // TODO: handle exception
                 e.printStackTrace();
@@ -523,7 +477,6 @@ public class MainControleur {
             try {
                 Template template = configuration.getTemplate("templates/header.ftl");//render("accueil.ftl", model);
                 template.process(null, writerh);
-                //System.out.println(writerh);
             } catch (Exception e) {
                 // TODO: handle exception
                 e.printStackTrace();
@@ -531,7 +484,6 @@ public class MainControleur {
             try {
                 Template template = configuration.getTemplate("templates/footer.ftl");//render("accueil.ftl", model);
                 template.process(null, writerf);
-                //System.out.println(writerf);
             } catch (Exception e) {
                 // TODO: handle exception
                 e.printStackTrace();
