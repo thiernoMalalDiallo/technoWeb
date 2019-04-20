@@ -16,4 +16,14 @@ public class UtilService {
         }
         return writer;
     }
+    public StringWriter getInfo(Configuration configuration){
+        StringWriter writer = new StringWriter();
+        try {
+            Template template = configuration.getTemplate("templates/info.ftl");
+            template.process(null, writer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return writer;
+    }
 }

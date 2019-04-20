@@ -1,12 +1,13 @@
 package controleur;
 
-import autre.log4jConf;
 import freemarker.template.*;
 import model.AListe;
 import model.LaListe;
 import DAO.UnSql2oModel;
 import model.Tag;
 import org.apache.log4j.BasicConfigurator;
+import service.ElementService;
+import service.UserService;
 import service.UtilService;
 
 import java.io.File;
@@ -33,6 +34,10 @@ public class MainControleur {
 
     UtilService utilService;
 
+    UserService userService ;
+
+    ElementService elementService;
+
     public MainControleur(UnSql2oModel modelsql, LaListe liste) {
         this.list_e = liste;
         this.model = modelsql;
@@ -55,7 +60,7 @@ public class MainControleur {
         externalStaticFileLocation("src/main/ressources");
 
         this.utilService = new UtilService();
-
+        this.userService=new UserService();
         /**
          * routes
          */
@@ -70,160 +75,46 @@ public class MainControleur {
             });
             /*--------------------------------------------------------------------------------------------------------------------------------------------*/
             get("/info", (request, response) -> {
-                StringWriter writer = new StringWriter();
-                try {
-                    Template template = configuration.getTemplate("templates/info.ftl");//render("accueil.ftl", model);
-                    template.process(null, writer);
-                } catch (Exception e) {
-                    // TODO: handle exception
-                    e.printStackTrace();
-                }
-                return writer;
+                return this.utilService.getInfo(configuration);
                 //return "info";
             });
             /*--------------------------------------------------------------------------------------------------------------------------------------------*/
             get("/connexion", (request, response) -> {
-
+                return this.userService.getConnexion(configuration);
             });
             post("/connexion", (request, response) -> {
-                String email = request.queryParams("email");
-                String mdp = request.queryParams("mdp");
-                String isInscription = request.queryParams("isIncription");
-                if(email != null || mdp != null){
-                    /*if(Integer.parseInt(isInscription) == 0){
-                        //inscription
-                        //model.insertTableElement(l.getListElement().size()+1,)
-                    }else{
-                        //connection
-                    }*/
-                }else{
-                    response.redirect("/accueil");
-                }
-                response.redirect("/accueil");
-                return "!";
+               return this.userService.Connect(configuration,request,response);
             });
 
             post("/inscription", (request, response) -> {//reunir dans connexion ?
-                String email = request.queryParams("email");
-                String mdp = request.queryParams("mdp");
-                String isInscription = request.queryParams("isIncription");
-                if(email != null || mdp != null){
-
-                }else{
-                    response.redirect("/connexion");
-                }
-                response.redirect("/connexion");
-                return "!";
+                return this.userService.inscription(configuration,request,response);
             });
             /*LES LISTES--------------------------------------------------------------------------------------------------------------------------------------------*/
             path("/listes", () -> {
                 get("", (request, response) -> {
-                    StringWriter writer = new StringWriter();
-                    try {
-                        Template template = configuration.getTemplate("templates/listes.ftl");//render("accueil.ftl", model);
-                        //template.dump(writer);
-                        template.process(null, writer);
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                        e.printStackTrace();
-                    }
-                    return writer;
-                    //return "Liste : " + request.params(":name") + " inexistante.";
+                    return this.elementService.getList(configuration.getTemplate("templates/listes.ftl"));
                 });
                 //RECHERCHE................................................................................................................................!!!!!!!!!!!
                 get("/recherche", (request, response) -> {
-                    StringWriter writer = new StringWriter();
-                    String recherche = request.queryParams("search");
-                    Map<String, List<AListe>> params = new HashMap<>();
-                    List<AListe> le = model.recherche(recherche);
-                    params.put("liste_e", le);
-                    params.put("liste_e_fils", null);
-                    try {
-                        Template template = configuration.getTemplate("templates/listes.ftl");//render("accueil.ftl", model);
-                        template.process(params, writer);
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                        e.printStackTrace();
-                    }
-                    return writer;
+
+                    return this.elementService.rechercheList(configuration,request,model);
                     //return "Liste Recherche: " + request.params(":name") + " inexistante.(en cours)";
                 });
                 //ADD................................................................................................................................
                 get("/add", (request, response) -> {
-                    StringWriter writer = new StringWriter();
-                    try {
-                        Template template = configuration.getTemplate("templates/ajoutlist.ftl");//render("accueil.ftl", model);
-                        Map<String, Object> params = new HashMap<>();
-                        List<AListe> le = model.getAllElement();
-                        List<String> ls = new ArrayList<>();
-                        params.put("liste_e", null);
-                        params.put("liste_e_pere", null);
-                        params.put("liste_tag", null);//.........................pas de tag pour les listes ?
-                        template.process(params, writer);
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                        e.printStackTrace();
-                    }
-                    return writer;
+                   return this.elementService.getAddList(configuration,model);
                 });
                 post("/add", (request, response) -> {
-                    String titre = request.queryParams("titre");
-                    String description = request.queryParams("description");
-                    String id = request.queryParams("idd");
-                    AListe newListe = new LaListe();
-                    if(titre != null || description != null){
-                        newListe.setTitre(titre);
-                        newListe.setDescription(description);
-                        Date d = new Date();
-                        d.setTime(System.currentTimeMillis());//inutile
-                        newListe.setDateCreation(d);//inutile
-                        newListe.setDateCreation(d);//inutile
-                        newListe.setId(UUID.randomUUID().hashCode());
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                        long date = new Date().getTime();
-                        sdf.format(date);
-                        if(list_e.add(newListe)){
-                            model.insertTableElement(newListe.getId(),newListe.getId(), sdf.format(date), sdf.format(date),newListe.getTitre(), newListe.getDescription(),0);//etat 0 par default, les listes n'ont pas d'état
-                            //model.insertTablePossede(newListe.getId(), list_e.getId());
-                        }else{
-                            //redirection erreur nouvelle liste
-                        }
-                        response.redirect("/listes/"+newListe.getId());
-                    }else{
-                        // faire redirection erreur nouvelle liste
-                        response.redirect("/listes/add");
-                    }
-                    return "! add !";
+                    return this.elementService.addList(model,request,response, list_e);
                 });
                 //TOUT AFFICHER................................................................................................................................
                 get("/all", (request, response) -> {
-                    list_e.setListe(model.getAllElement());//update de la liste
-                    StringWriter writer = new StringWriter();
-                    Map<String, List<AListe>> params = new HashMap<>();
-                    List<AListe> le = rechercheMere();//model.getAllElement();
-                    params.put("liste_e", le);
-                    params.put("liste_e_fils", null);
-                    try {
-                        Template template = configuration.getTemplate("templates/listes.ftl");//render("accueil.ftl", model);
-                        template.process(params, writer);
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                        e.printStackTrace();
-                    }
-                    return writer;
+                    return this.elementService.getALl(configuration, model);
                 });
 
                 //SUPPRIMER LISTE................................................................................................................................
                 delete("/:name", (request, response) -> {
-                    //request.params(":name")
-                    int i = Integer.parseInt(replacePasInt(request.params(":name")));
-                    AListe ee = model.getElement(i);
-                    model.deleteElement(ee.getId());
-                    //model.d
-                    //modification
-                    //model.insertTableElement(l.getListElement().size()+1,)
-                    response.redirect("/listes/"+i);
-                    return "SUPPRIMER name: " + request.params(":name") + " inexistante.(en cours)";
+                    return this.elementService.deleteList(response,request,model);
                 });
                 //................................................................................................................................
                 path("/:name", () -> {
