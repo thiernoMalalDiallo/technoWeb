@@ -30,27 +30,13 @@ public class MainControleur {
     //
     UnSql2oModel model;
 
-    /*public MainControleur(Sql2oModel model, ListeComposite l,List<Element> list_e) {
-        this.model = model;
-        this.list_e = list_e;//model.getAllElement();
-        this.l = l;//model.getListeComposite(1);
-    }*/
 
-    /**
-     *
-     * @param modelsql
-     * @param liste
-     */
     public MainControleur(UnSql2oModel modelsql, LaListe liste) {
         this.list_e = liste;
         this.model = modelsql;
     }
 
-    /**
-     *
-     * @param args
-     * @throws Exception
-     */
+
     public void main(String[] args) throws Exception {
         BasicConfigurator.configure();
         log4jConf.log.info("This is Logger Info");
