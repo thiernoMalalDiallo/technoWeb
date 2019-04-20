@@ -1,0 +1,457 @@
+/*Tag*/
+.containertag{
+	color: black;
+}
+
+/*header*/
+.nav1 {
+	width: 12.5%;
+	alignment: left;
+	text-align: left;
+	line-height:30px;
+	outline-width: 30px;
+}
+
+header
+{
+	background-size: cover;
+	height:350px;
+}
+
+.nav1 img{
+	/*border: 0.5px black solid;*/
+}
+.nav3 {
+	width: 12.5%;
+	alignment: right;
+	text-align: right;
+	line-height:30px;
+	outline-width: 30px;
+}
+
+.nav3 img{
+	/*border: 0.5px black solid;*/
+}
+.nav2 {
+	width: 25%;
+}
+
+	/*******Background Menus */
+	/* menus */
+#menu a{
+	color: white;
+	font-weight: bold;
+	text-decoration: none;
+}
+#menu li
+{   background-image:linear-gradient(#646464,#646464); }
+
+	/* Background hover */
+#menu li:hover, #menu li li:hover
+{   background:#646464; }
+
+li
+{   background: #646464;
+	transition-duration: 1s;  }
+
+	/* Liens */
+#menu a
+{ display:block; }
+
+/*footer*/
+
+/*connexion*/
+.connexion
+{
+	padding : 1px 20px;
+	margin-bottom: 20px;
+	background-color: rgba(255, 255, 255, 1);
+	/*box-shadow: 0px 4px 10px #1c1a19;*/
+	color: black;
+	float: left;
+	text-align: center;
+	width: 100%;
+	text-align: center;
+}
+
+footer
+{background-color: rgba(100,100,100,0.9);
+	border-style: solid;
+	border-color: black;
+	border-width: 2px;
+	width:100%;
+	margin:auto;
+	position: absolute;
+	text-align: center;
+	color: white;
+	bottom: 0;
+}
+
+/*Accueil style*/
+.presentation{
+	width: 100%;
+	text-align: center;
+}
+.titre_b{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 150%
+}
+
+/*Info style*/
+.info {
+	width: 100%;
+	text-align: center;
+}
+
+/*Syle principale*/
+/*
+a {
+	color: white;
+	font-weight: bold;
+	text-decoration: none;
+}
+h1
+{
+	color:white;
+	text-decoration: underline;
+	text-decoration-style: double;
+	font-size: 2.5em;
+}
+*/
+
+article
+	{display:block;
+	position:relative;
+	bottom:100px;
+	top: 00px;
+	}
+	
+body
+	{margin:0;
+	background-attachment:fixed;
+	background-size: 100% 100%;
+	width: 100%;
+	}	
+
+h3
+	{font-family: cursive;
+	text-align: center;}
+
+body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+nav {
+	width: 100%;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul {
+    margin:0;
+    padding:0;
+    line-height:30px;
+}
+
+nav ul li {
+    list-style:none;
+    float:left;
+    position:relative;
+    width:33.33%;
+    background: #999;
+    height: 30px;
+}
+
+
+/* Liste style*/
+
+listes {
+	width: 100%;
+	text-align: center;
+}
+
+listes table {
+	alignment: center;
+	text-align: center;
+	background-color: rgba(255, 255, 255, 0.9);
+	width:80%;
+	margin:auto;
+	border-collapse: collapse;
+}
+/* Liens */
+.table_liste a
+{ display:block; }
+
+
+.table_liste tr{
+	border-style: solid;
+	border-color: black;
+	border-width: 4px;
+	text-align: center;
+	border-collapse: collapse;
+}
+.table_liste_fils tr{
+	border-style: solid;
+	border-color: black;
+	border-width: 2px;
+	text-align: center;
+	border-collapse: collapse;
+}
+
+.author {
+	alignment: left;
+	text-align: left;
+}
+
+.content {
+	alignment: center;
+	text-align: center;
+}
+
+.date {
+	alignment: right;
+	text-align: right;
+	color:black;
+	text-decoration: none;
+	margin-left: 5%;
+}
+
+.titre {
+	font-weight: bold;
+	color:black;
+}
+
+#commentaires form {
+	height: 250px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+}
+
+
+#commentaires textarea {
+	font-family: 'Trebuchet MS', sans-serif;
+	resize:none;
+	border: none;
+	border-bottom: 1px solid #000;
+	height: 150px;
+	width: 100%;
+	margin: 15% 0% 15% 2%;
+
+}
+
+#commentaires input[type=submit] {
+	width: 30%;
+	margin-left: 35%;
+	margin-right: 35%;
+	height: 20%;
+	text-decoration: none;
+	background-color: #333;
+	font-weight: bold;
+	border-radius: 3px;
+	transition: all 0.3s ease;
+	border: 1px solid #333;
+}
+
+#commentaires input[type=submit]:hover {
+	color: #333;
+	background-color: white;
+}
+
+#commentaires .comment {
+	display: flex;
+	flex-direction: row;
+	margin-top: 3%;
+}
+
+#commentaires .message {
+	display: flex;
+	flex-direction: column;
+	/*margin-left: 5%;*/
+}
+
+
+/* boutons style*/
+
+.zone {
+	width:50px;
+	height:50px;
+	background:#fafafa;
+	box-shadow:2px 2px 8px #aaa;
+	font:bold 13px Arial;
+	border-radius:50%;
+	color:#555;
+}
+
+.add {
+	alignment: center;
+	text-align: center;
+}
+
+.boutonaddl{
+	alignment: center;
+	text-align: center;
+}
+
+.boutonall
+{
+	alignment: center;
+	text-align: center;
+}
+
+.bouton {
+	width:50px;
+	height:50px;
+	background:#686868;
+	box-shadow:2px 2px 8px #686868;
+	font:bold 13px Arial;
+	border-radius:50%;
+	color: #ffffff;
+}
+
+.bouton1 {
+	width:25px;
+	height:25px;
+	background:#686868;
+	box-shadow:2px 2px 8px #686868;
+	font:bold 13px Arial;
+	border-radius:50%;
+	color: #ffffff;
+
+}
+.bouton2 {
+	width:25px;
+	height:25px;
+	background:#686868;
+	box-shadow:2px 2px 8px #686868;
+	font:bold 13px Arial;
+	border-radius:50%;
+	color: #ffffff;
+}
+.bouton3 {
+	width:25px;
+	height:25px;
+	background:#686868;
+	box-shadow:2px 2px 8px #686868;
+	font:bold 13px Arial;
+	border-radius:50%;
+	color: #ffffff;
+}
+
+/* RECHERCHE STYLE */
+
+
+.barRecherche input[type=text]{
+	font-size: larger;
+	width: 130px;
+	border: none;
+	border-bottom: 1px solid #000;
+	-webkit-transition: width 0.4s ease-in-out;
+	transition: width 0.4s ease-in-out;
+}
+
+
+.barRecherche input[type=text]:focus {
+	width: 100%;
+}
+
+input[type=text]:focus {
+	width: 100%;
+> 5ec7d023421f8017cd0318af4a98dc96bcaed8b0
+}
+
+.barRecherche input[type=submit]{
+	border: 1px solid #000;
+	border-radius: 3px;
+	background-color: #333;
+	color:white;
+	font-size: larger;
+}
+
+#Pages input[type=submit]{
+	border: 1px solid #000;
+	border-radius: 3px;
+	background-color: #333;
+	color:white;
+	font-size: larger;
+}
+
+.barRecherche input[type=submit]:hover {
+	color: black;
+	background-color: white;
+	border: 1px solid black;
+	transition: all 0.3s ease;
+}
+
+.ecranRecherche {
+	display:flex;
+	flex-direction:row;
+	flex-wrap: wrap;
+}
+
+.barRecherche{
+	margin:1%;
+	text-align: center;
+	width: 100%;
+}
+
+aside{
+	margin-top: 3px;
+	width:300px;
+	border: none;
+	border-radius: 3%;
+	background-color: #333;
+}
+
+/*Slide Style*/
+
+#slider {
+	margin:3%;
+}
+
+
+/* addlist*/
+
+.liste {
+	width: 100%;
+	alignment: center;
+	text-align: center;
+ }
+
+#liste {
+	width: 100%;
+	alignment: center;
+	text-align: center;
+}
+
+.table_addliste{
+	width: 100%;
+	alignment: center;
+	text-align: center;
+}
+
+
+.table_addliste tr{
+	width: 100%;
+	alignment: center;
+	text-align: center;
+}
+
+#description {
+	width: 100%;
+	height: 50px;
+}
+
+#tags {
+	width: 100%;
+	alignment: center;
+	text-align: center;
+}
+
+#titre {
+	width: 100%;
+}
+
