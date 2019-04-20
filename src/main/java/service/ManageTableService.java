@@ -2,7 +2,7 @@
 import DAO.UnSql2oModel;
 
 
-public static class ManageTable{
+public static class ManageTableService{
 
     private static UnSql2oModel dao = new UnSql2oModel();
     
