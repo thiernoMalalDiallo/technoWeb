@@ -83,16 +83,7 @@ public class MainControleur {
             });
             /*--------------------------------------------------------------------------------------------------------------------------------------------*/
             get("/connexion", (request, response) -> {
-                StringWriter writer = new StringWriter();
-                try {
-                    Map<String, Integer> params = new HashMap<>();
-                    params.put("isIncription", 0);
-                    Template template = configuration.getTemplate("templates/connexion.ftl");
-                    template.process(params, writer);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return writer;
+
             });
             post("/connexion", (request, response) -> {
                 String email = request.queryParams("email");
