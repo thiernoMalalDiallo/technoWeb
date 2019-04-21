@@ -19,16 +19,8 @@ public class Main {
     public static void main(String[] args) throws Exception {
         DAO model = new DAO();
 
-        model.dropTable("ELEMENT");
-        model.dropTable("POSSEDE");
-        model.dropTable("TAG");
-
-        model.createTableElement();
-        model.createTablePossede();
-        model.createTableTag();
-
-        model.insertTableElement(1, 1, "2018-12-15", "2018-12-16", "toto au berceau", "toto essai1",0);
-        model.insertTableElement(2, 1, "2018-12-19", "2018-12-20", "toto au berceaux", "toto essai2",0);
+        model.insertTableElement(3, 7, "2013-12-15", "2018-12-16", "papa va au marché", "kirikou",1);
+        model.insertTableElement(8, 0, "2017-12-19", "2018-12-20", "j'ai faim", "tatat",0);
         TodoList list_e = new TodoList();
         list_e.setListe(model.getAllElement());
         Element el = model.getElement(1);

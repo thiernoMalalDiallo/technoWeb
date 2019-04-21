@@ -8,9 +8,12 @@ public static class ManageTableService{
 
     public static void initDB(){
 
-        dao.dropTable(table);
-        dao.createTableElement();
-        dao.createTablePossede();
-        dao.createTableTag();
+        model.dropTable("ELEMENT");
+        model.dropTable("POSSEDE");
+        model.dropTable("TAG");
+
+        model.createTableElement();
+        model.createTablePossede();
+        model.createTableTag();
     }
 }
