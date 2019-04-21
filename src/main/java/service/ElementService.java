@@ -4,6 +4,7 @@ import DAO.UnSql2oModel;
 import freemarker.template.Template;
 import model.AListe;
 import model.LaListe;
+import model.Tag;
 import spark.Request;
 import spark.Response;
 
@@ -16,10 +17,10 @@ public  class ElementService{
 
     //
     private LaListe list_e;
-    public StringWriter getList(Template template){
+    public StringWriter getList(Configuration configuration){
         StringWriter writer = new StringWriter();
         try {
-            //template.dump(writer);
+            Template template = configuration.getTemplate("templates/listes.ftl");
             template.process(null, writer);
         } catch (Exception e) {
             // TODO: handle exception
@@ -112,6 +113,173 @@ public  class ElementService{
         response.redirect("/listes/"+i);
         return "SUPPRIMER name: " + request.params(":name") + " inexistante.(en cours)";
     }
+
+    public StringWriter getListUser(Configuration configuration, Request request, UnSql2oModel model){
+        list_e.setListe(model.getAllElement());//update de la liste
+        StringWriter writer = new StringWriter();
+        String s = replacePasInt(request.params(":name"));
+        int i = -3;i = Integer.parseInt(replacePasInt(s));//request.params(":name")
+        AListe ee;ee = model.getElement(i);
+        Map<String, List<AListe>> params = new HashMap<>();
+        List<AListe> le = new ArrayList<>();le.add(ee);// future Liste<AListe>
+        List<AListe> lee = new ArrayList<>();//future Liste element
+        lee.addAll(LaListe.rechercheFils(model,list_e.getListe(),ee.getId()));
+        params.put("liste_e", le);
+        params.put("liste_e_fils", lee);
+        try {
+
+            Template template = configuration.getTemplate("templates/listes.ftl");
+            template.process(params, writer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return writer;
+    }
+
+
+    public Object updateListUser(Configuration configuration, Request request, UnSql2oModel model) {
+        StringWriter writer = new StringWriter();
+        int i = Integer.parseInt(replacePasInt(request.params(":name")));
+        AListe ee = model.getElement(i);
+
+        Map<String, Object> params = new HashMap<>();
+        List<AListe> le = new ArrayList<>();le.add(ee);
+        List<String> ls = new ArrayList<>();//ls.add("atest");ls.add("btest");ls.add("ctest");ls.add("dtest");ls.add("etest");
+        for(Tag t: model.getAllTag(i)){
+            ls.add(t.getTag()+",");
+        }
+        params.put("liste_e", le);
+        params.put("liste_e_pere", null);
+
+        //pour ne pas afficher le input des tags pour les listes
+        list_e.setListe(model.getAllElement());//update de la liste
+        if(LaListe.rechercheFils(model,list_e.getListe(),ee.getId()).size() > 0){
+            params.put("liste_tag", null);
+        }else{
+            params.put("liste_tag", ls);
+        }
+
+        try {
+            Template template = configuration.getTemplate("templates/ajoutlist.ftl");
+            template.process(params, writer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return writer;
+    }
+
+
+    public Object updateEelemntList(Request request,UnSql2oModel model,Response response) {
+        String titre = request.queryParams("titre");//request.params("")
+        String description = request.queryParams("description");//request.params("")
+        String id = request.queryParams("idd");//request.params("")
+        String tags = request.queryParams("tags");
+
+        String[] ls = tags.split(",");
+        int i = Integer.parseInt(replacePasInt(request.params(":name")));
+        Date d = new Date();
+        d.setTime(System.currentTimeMillis());//inutile
+        int etat = 0;
+        String afaire = request.queryParams("afaire");
+        String fait = request.queryParams("fait");
+        if(afaire == null){
+            if(fait != null){
+                etat = 2;
+            }
+        }else{
+            etat = 1;
+        }
+        if(titre != null || description != null){
+            //modification
+            AListe ee = model.getElement(i);
+            model.updateElement(ee.getId(),ee.getId(), ee.getDateCreation(),d,titre,description,etat);
+            model.deleteTagsElement(ee.getId()); //spprime tout les tags
+            for(String s:ls){
+                model.insertTableTag(ee.getId(),s);//ajout des nouveaux tags
+            }
+            response.redirect("/listes/"+i);
+        }else{
+            response.redirect("/listes/"+i);
+        }
+        return "!";
+    }
+
+    public Object getEleementList(Configuration configuration, Request request, UnSql2oModel model) {
+        StringWriter writer = new StringWriter();
+        int i = -3;i = Integer.parseInt(replacePasInt(request.params(":name")));
+        AListe ee;ee = model.getElement(i);//inutile ?
+
+        Map<String, Object> params = new HashMap<>();
+        List<AListe> le = new ArrayList<>();le.add(ee);
+        List<String> ls = new ArrayList<>();
+        params.put("liste_e", null);
+        params.put("liste_e_pere", le); //inutile ?
+        params.put("liste_tag", ls);
+        try {
+            Template template = configuration.getTemplate("templates/ajoutlist.ftl");
+            template.process(params, writer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return writer;
+    }
+
+    public Object addElementList(Request request,Response response,UnSql2oModel model) {
+        String titre = request.queryParams("titre");//request.params("")
+        String description = request.queryParams("description");//request.params("")
+        String id = replacePasInt(request.queryParams("idd"));
+        String tags = request.queryParams("tags");
+        String[] ls = tags.split(",");
+        AListe newListe = new LaListe();
+        int etat = 0;
+        String afaire = request.queryParams("afaire");
+        String fait = request.queryParams("fait");
+        if(afaire == null){
+            if(fait != null){
+                etat = 2;
+            }
+        }else{
+            etat = 1;
+        }
+        if(titre != null || description != null){
+            newListe.setTitre(titre);
+            newListe.setDescription(description);
+            newListe.setId(UUID.randomUUID().hashCode());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            long date = new Date().getTime();
+            sdf.format(date);
+            if(list_e.add(newListe)){
+                model.insertTableElement(newListe.getId(),Integer.parseInt(id), sdf.format(date),sdf.format(date), newListe.getTitre(), newListe.getDescription(),etat);//
+                model.insertTablePossede(newListe.getId(), Integer.parseInt(id));
+                for(String s:ls){
+                    model.insertTableTag(newListe.getId(),s);
+                }
+            }else{
+                //redirection erreur nouvelle liste
+            }
+            response.redirect("/listes/"+Integer.parseInt(id));
+        }else{
+            // faire redirection erreur nouvelle liste
+            response.redirect("/listes/add");
+        }
+        //response.redirect("/listes/"+id);
+        return "!";
+    }
+    public Object getdeleteElementList(Request request,UnSql2oModel model,Response response) {
+        int i = Integer.parseInt(replacePasInt(request.params(":name")));
+        AListe ee = model.getElement(i);
+        model.deleteElement(ee.getId());
+        response.redirect("/listes/all");
+        return "Liste supp: " + request.params(":name") + " inexistante.(en cours)";
+    }
+    public Object deleteElementList(Request request,UnSql2oModel model,Response response) {
+        //request.params(":name")
+        int i = Integer.parseInt(replacePasInt(request.params(":name")));
+        AListe ee = model.getElement(i);
+        model.deleteElement(ee.getId());
+        response.redirect("/listes/all");
+        return "Liste supp: " + request.params(":name") + " inexistante.";
+    }
     private List<AListe> rechercheMere(UnSql2oModel model){
         List<AListe> liste = new ArrayList<>();
         for(AListe a: list_e.getListe()){
@@ -125,5 +293,6 @@ public  class ElementService{
     private String replacePasInt(String s){
         return s.replaceAll(",","").replaceAll(" ","").replaceAll("%","");
     }
+
 
 }
