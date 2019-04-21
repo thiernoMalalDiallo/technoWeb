@@ -1,6 +1,6 @@
 /*Tag*/
 .containertag{
-	color: black;
+	color: white;
 }
 
 /*header*/
@@ -11,7 +11,9 @@
 	line-height:30px;
 	outline-width: 30px;
 }
-
+.menu{
+     margin: 0 auto;
+     width: 100px; }
 header
 {
 	background-size: cover;
@@ -33,7 +35,7 @@ header
 	/*border: 0.5px black solid;*/
 }
 .nav2 {
-	width: 25%;
+	width: 27%;
 }
 
 	/*******Background Menus */
@@ -160,7 +162,7 @@ nav ul li {
     list-style:none;
     float:left;
     position:relative;
-    width:33.33%;
+    width:40%;
     background: #999;
     height: 30px;
 }

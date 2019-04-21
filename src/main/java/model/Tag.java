@@ -8,7 +8,6 @@ public class Tag {
     String tag;
 
     /**
-     *
      * @return
      */
     public String getTag() {
@@ -16,7 +15,6 @@ public class Tag {
     }
 
     /**
-     *
      * @param tag
      */
     public void setTag(String tag) {

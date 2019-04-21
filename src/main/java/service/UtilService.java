@@ -6,7 +6,7 @@ import freemarker.template.Template;
 import java.io.StringWriter;
 
 public class UtilService {
-    public StringWriter getAcceuil(Configuration configuration){
+    public StringWriter getAcceuil(Configuration configuration) {
         StringWriter writer = new StringWriter();
         try {
             Template template = configuration.getTemplate("templates/accueil.ftl");
@@ -16,7 +16,8 @@ public class UtilService {
         }
         return writer;
     }
-    public StringWriter getInfo(Configuration configuration){
+
+    public StringWriter getInfo(Configuration configuration) {
         StringWriter writer = new StringWriter();
         try {
             Template template = configuration.getTemplate("templates/info.ftl");
@@ -45,7 +46,7 @@ public class UtilService {
             e.printStackTrace();
         }
         ///res.type("application/json");
-        return writerh+"<center>{\"Erreur\":\"404\" page introuvable}</center>"+writerf;
+        return writerh + "<center>{\"Erreur\":\"404\" page introuvable}</center>" + writerf;
     }
 
     public Object get500(Configuration configuration) {
@@ -66,6 +67,6 @@ public class UtilService {
             e.printStackTrace();
         }
         //res.type("application/json");
-        return writerh+"<center>{\"Erreur\":\"500 Problème(s) serveur\"}</center>"+writerf;
+        return writerh + "<center>{\"Erreur\":\"500 Problème(s) serveur\"}</center>" + writerf;
     }
 }

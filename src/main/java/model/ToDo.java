@@ -1,13 +1,11 @@
 package model;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  *
  */
-public abstract class ToDo {
+public class ToDo {
 
     //
     private int id;
@@ -21,7 +19,6 @@ public abstract class ToDo {
     private Date dateDerModif;
 
     /**
-     *
      * @return
      */
     public int getId() {
@@ -29,7 +26,6 @@ public abstract class ToDo {
     }
 
     /**
-     *
      * @param id
      */
     public void setId(int id) {
@@ -37,7 +33,6 @@ public abstract class ToDo {
     }
 
     /**
-     *
      * @return
      */
     public String getTitre() {
@@ -45,7 +40,6 @@ public abstract class ToDo {
     }
 
     /**
-     *
      * @param titre
      */
     public void setTitre(String titre) {
@@ -53,7 +47,6 @@ public abstract class ToDo {
     }
 
     /**
-     *
      * @return
      */
     public String getDescription() {
@@ -61,7 +54,6 @@ public abstract class ToDo {
     }
 
     /**
-     *
      * @param description
      */
     public void setDescription(String description) {
@@ -69,7 +61,6 @@ public abstract class ToDo {
     }
 
     /**
-     *
      * @return
      */
     public Date getDateCreation() {
@@ -77,7 +68,6 @@ public abstract class ToDo {
     }
 
     /**
-     *
      * @param dateCreation
      */
     public void setDateCreation(Date dateCreation) {
@@ -85,7 +75,6 @@ public abstract class ToDo {
     }
 
     /**
-     *
      * @return
      */
     public Date getDateDerModif() {
@@ -93,7 +82,6 @@ public abstract class ToDo {
     }
 
     /**
-     *
      * @param dateDerModif
      */
     public void setDateDerModif(Date dateDerModif) {
@@ -101,7 +89,7 @@ public abstract class ToDo {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         String vals = "\n" + "</br>Titre: " + titre + "\n" +
                 "</br>Description: " + description + "\n" +
                 //"</br>Liste d'éléments: " + listElement + "\n" +

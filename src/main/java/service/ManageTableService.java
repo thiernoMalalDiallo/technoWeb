@@ -1,19 +1,20 @@
+package service;
 
 import DAO.DAO;
 
 
-public static class ManageTableService{
+public class ManageTableService {
 
     private static DAO dao = new DAO();
 
-    public static void initDB(){
+    public static void initDB() {
 
-        model.dropTable("ELEMENT");
-        model.dropTable("POSSEDE");
-        model.dropTable("TAG");
+        DAO.dropTable("ELEMENT");
+        DAO.dropTable("POSSEDE");
+        DAO.dropTable("TAG");
 
-        model.createTableElement();
-        model.createTablePossede();
-        model.createTableTag();
+        DAO.createTableElement();
+        DAO.createTablePossede();
+        DAO.createTableTag();
     }
 }

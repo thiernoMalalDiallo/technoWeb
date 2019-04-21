@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserService {
-    public StringWriter getConnexion(Configuration configuration){
+    public StringWriter getConnexion(Configuration configuration) {
         StringWriter writer = new StringWriter();
         try {
             Map<String, Integer> params = new HashMap<>();
@@ -22,18 +22,19 @@ public class UserService {
         }
         return writer;
     }
-    public Object Connect(Configuration configuration, Request request, Response response){
+
+    public Object Connect(Configuration configuration, Request request, Response response) {
         String email = request.queryParams("email");
         String mdp = request.queryParams("mdp");
         String isInscription = request.queryParams("isIncription");
-        if(email != null || mdp != null){
+        if (email != null || mdp != null) {
                     /*if(Integer.parseInt(isInscription) == 0){
                         //inscription
                         //model.insertTableElement(l.getListElement().size()+1,)
                     }else{
                         //connection
                     }*/
-        }else{
+        } else {
             response.redirect("/accueil");
         }
         response.redirect("/accueil");
@@ -44,9 +45,9 @@ public class UserService {
         String email = request.queryParams("email");
         String mdp = request.queryParams("mdp");
         String isInscription = request.queryParams("isIncription");
-        if(email != null || mdp != null){
+        if (email != null || mdp != null) {
 
-        }else{
+        } else {
             response.redirect("/connexion");
         }
         response.redirect("/connexion");

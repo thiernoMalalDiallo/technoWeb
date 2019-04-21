@@ -13,59 +13,16 @@ public class TodoList extends ToDo {
     private List<ToDo> children = new ArrayList<>();
 
     /**
-     *
-     * @param composant
-     * @return
-     */
-    public boolean add(ToDo composant){
-        if(children.add(composant)){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    /**
-     *
-     * @param composant
-     * @return
-     */
-    public boolean remove(ToDo composant){
-        if(children.remove(composant)){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    /**
-     *
-     * @return
-     */
-    public List<ToDo> getListe() {
-        return children;
-    }
-
-    /**
-     *
-     * @param liste
-     */
-    public void setListe(List<ToDo> liste) {
-        this.children = liste;
-    }
-
-    /**
-     *
      * @param sql
      * @param liste
      * @param id
      * @return
      */
-    public static List<ToDo> rechercheFils(DAO sql, List<ToDo> liste, int id){
+    public static List<ToDo> rechercheFils(DAO sql, List<ToDo> liste, int id) {
         List<ToDo> l = new ArrayList<>();
-        for(int i : sql.getAllPossede(id)){
-            for (ToDo a: liste) {
-                if(a.getId() == i){
+        for (int i : DAO.getAllPossede(id)) {
+            for (ToDo a : liste) {
+                if (a.getId() == i) {
                     l.add(a);
                 }
             }
@@ -74,17 +31,16 @@ public class TodoList extends ToDo {
     }
 
     /**
-     *
      * @param sql
      * @param liste
      * @param id
      * @return
      */
-    public static List<ToDo> recherchePere(DAO sql, List<ToDo> liste, int id){
+    public static List<ToDo> recherchePere(DAO sql, List<ToDo> liste, int id) {
         List<ToDo> l = new ArrayList<>();
-        for(int i : sql.getAllPossedant(id)){
-            for (ToDo a: liste) {
-                if(a.getId() == i){
+        for (int i : DAO.getAllPossedant(id)) {
+            for (ToDo a : liste) {
+                if (a.getId() == i) {
                     l.add(a);
                 }
             }
@@ -93,8 +49,38 @@ public class TodoList extends ToDo {
         return l;
     }
 
+    /**
+     * @param composant
+     * @return
+     */
+    public boolean add(ToDo composant) {
+        return children.add(composant);
+    }
+
+    /**
+     * @param composant
+     * @return
+     */
+    public boolean remove(ToDo composant) {
+        return children.remove(composant);
+    }
+
+    /**
+     * @return
+     */
+    public List<ToDo> getListe() {
+        return children;
+    }
+
+    /**
+     * @param liste
+     */
+    public void setListe(List<ToDo> liste) {
+        this.children = liste;
+    }
+
     @Override
-    public String toString(){
+    public String toString() {
         StringBuffer result = new StringBuffer();
         String vals = "\n" + "</br>Titre: " + super.getTitre() + "\n" +
                 "</br>Description: " + super.getDescription() + "\n" +
