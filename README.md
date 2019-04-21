@@ -12,7 +12,8 @@ Licence publique générale GNU (GPL3)
 
 <pre>
 
-Action : -recherche en rapport au titre ou a la description de n'importe quel élément
+Action :
+        -recherche en rapport au titre ou a la description de n'importe quel élément
 	 -afficher toutes les listes
 	 -afficher la liste ou l'élément selectionné (clique sur la ligne du tableau)
 	 -création de liste avec un titre et une decription

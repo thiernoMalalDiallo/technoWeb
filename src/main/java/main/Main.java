@@ -12,7 +12,6 @@ import java.util.Date;
  */
 public class Main {
     /**
-     *
      * @param args
      * @throws Exception
      */
@@ -37,15 +36,15 @@ public class Main {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date d = sdf.parse(s);
         el.setDateDerModif(d);
-        model.updateElement(1, el.getId(),el.getDateCreation(), el.getDateDerModif(), el.getTitre(), el.getDescription(),0);
+        model.updateElement(1, el.getId(), el.getDateCreation(), el.getDateDerModif(), el.getTitre(), el.getDescription(), 0);
         list_e.setListe(model.getAllElement());
         //----- Affichage d'une sous-liste
         final String[] vals3 = {""};
-        try{
-            Controller main = new Controller(model,list_e);
+        try {
+            Controller main = new Controller(model, list_e);
             main.router(args);
-        }catch (Exception e){
-            System.err.println("ERREUR INIT SERVEUR"+e);
+        } catch (Exception e) {
+            System.err.println("ERREUR INIT SERVEUR" + e);
         }
     }
 }

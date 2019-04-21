@@ -2,7 +2,7 @@ package controleur;
 
 import freemarker.template.*;
 import model.TodoList;
-import DAO.UnSql2oModel;
+import DAO.DAO;
 import org.apache.log4j.BasicConfigurator;
 import service.ElementService;
 import service.UserService;
@@ -16,13 +16,13 @@ import static spark.Spark.internalServerError;
 /**
  *
  */
-public class MainControleur {
+public class Controller {
     //
     Configuration configuration = new Configuration(Configuration.VERSION_2_3_19);
     //
     TodoList list_e;
     //
-    UnSql2oModel model;
+    DAO model;
 
     UtilService utilService;
 
@@ -30,13 +30,13 @@ public class MainControleur {
 
     ElementService elementService;
 
-    public MainControleur(UnSql2oModel modelsql, TodoList liste) {
+    public Controller(DAO modelsql, TodoList liste) {
         this.list_e = liste;
         this.model = modelsql;
     }
 
 
-    public void main(String[] args) throws Exception {
+    public void router(String[] args) throws Exception {
         BasicConfigurator.configure();
         port(8080);
         int maxThreads = 10;
@@ -45,11 +45,11 @@ public class MainControleur {
         threadPool(maxThreads, minThreads, timeOutMillis);
         staticFiles.expireTime(600); // ten minutes
         configuration = new Configuration(Configuration.VERSION_2_3_19);
-        configuration.setDirectoryForTemplateLoading(new File("src/main/ressources"));
+        configuration.setDirectoryForTemplateLoading(new File("src/router/ressources"));
         configuration.setDefaultEncoding("UTF-8");
         configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
         configuration.setLogTemplateExceptions(false);
-        externalStaticFileLocation("src/main/ressources");
+        externalStaticFileLocation("src/router/ressources");
 
         this.utilService = new UtilService();
         this.userService=new UserService();
