@@ -1,8 +1,7 @@
 package controleur;
 
 import freemarker.template.*;
-import model.AListe;
-import model.LaListe;
+import model.TodoList;
 import DAO.UnSql2oModel;
 import org.apache.log4j.BasicConfigurator;
 import service.ElementService;
@@ -10,7 +9,6 @@ import service.UserService;
 import service.UtilService;
 
 import java.io.File;
-import java.io.StringWriter;
 
 import static spark.Spark.*;
 import static spark.Spark.internalServerError;
@@ -22,7 +20,7 @@ public class MainControleur {
     //
     Configuration configuration = new Configuration(Configuration.VERSION_2_3_19);
     //
-    LaListe list_e;
+    TodoList list_e;
     //
     UnSql2oModel model;
 
@@ -32,7 +30,7 @@ public class MainControleur {
 
     ElementService elementService;
 
-    public MainControleur(UnSql2oModel modelsql, LaListe liste) {
+    public MainControleur(UnSql2oModel modelsql, TodoList liste) {
         this.list_e = liste;
         this.model = modelsql;
     }
@@ -152,66 +150,24 @@ public class MainControleur {
 
             });
 
-            model.getAllElement();
-            final String[] vals3 = {""};
-            vals3[0] += list_e;
-            String finalVals3 = vals3[0];
-            get("/all", (req, res) -> finalVals3);
-
-            //...........................................................................................utile?
             get("/:name", (request, response) -> {
                 return "Page: " + request.params(":name") + " inexistante.";
             });
 
         });
         get("/:name", (request, response) -> {
-            //request.params(":name")
             return "Page: /" + request.params(":name") + " inexistante.";
         });
 
         //ERREUR ......................................................................!!
         // gerer l'err 404
         notFound((req, res) -> {
-            StringWriter writerh = new StringWriter();
-            StringWriter writerf = new StringWriter();
-            try {
-                Template template = configuration.getTemplate("templates/header.ftl");//render("accueil.ftl", model);
-                template.process(null, writerh);
-            } catch (Exception e) {
-                // TODO: handle exception
-                e.printStackTrace();
-            }
-            try {
-                Template template = configuration.getTemplate("templates/footer.ftl");//render("accueil.ftl", model);
-                template.process(null, writerf);
-            } catch (Exception e) {
-                // TODO: handle exception
-                e.printStackTrace();
-            }
-            ///res.type("application/json");
-            return writerh+"<center>{\"Erreur\":\"404\" page introuvable}</center>"+writerf;
+            return this.utilService.get404(configuration);
         });
 
         // gerer l'err  500
         internalServerError((req, res) -> {
-            StringWriter writerh = new StringWriter();
-            StringWriter writerf = new StringWriter();
-            try {
-                Template template = configuration.getTemplate("templates/header.ftl");//render("accueil.ftl", model);
-                template.process(null, writerh);
-            } catch (Exception e) {
-                // TODO: handle exception
-                e.printStackTrace();
-            }
-            try {
-                Template template = configuration.getTemplate("templates/footer.ftl");//render("accueil.ftl", model);
-                template.process(null, writerf);
-            } catch (Exception e) {
-                // TODO: handle exception
-                e.printStackTrace();
-            }
-            //res.type("application/json");
-            return writerh+"<center>{\"Erreur\":\"500 Problème(s) serveur\"}</center>"+writerf;
+            return this.utilService.get500(configuration);
         });
     }
 

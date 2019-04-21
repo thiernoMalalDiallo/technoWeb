@@ -1,10 +1,9 @@
 package DAO;
 
-import autre.log4jConf;
-import model.AListe;
+import model.ToDo;
 import model.Tag;
-import model.UnElement;
-import org.apache.log4j.Priority;
+import model.Element;
+import org.h2.jdbcx.JdbcDataSource;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.sql2o.data.Row;
@@ -21,24 +20,23 @@ import java.util.logging.Logger;
 /**
  *
  */
-public class UnSql2oModel {//MANAGER DAO ?
+public class DAO {//MANAGER DAO ?
     //
-    private static final Logger LOGGER = Logger.getLogger(UnSql2oModel.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DAO.class.getName());
     //
     private static Sql2o sql2o;
 
-    /**
-     *
-     * @param ds
-     */
-    public UnSql2oModel(){
+
+    public DAO(){
         String url = "jdbc:h2:./listout";
         JdbcDataSource datasource = new JdbcDataSource();
         datasource.setURL(url);
         DataSource ds = datasource;
         this.sql2o = new Sql2o(ds);
     }
-    
+
+
+
     /**
      *
      * @param table
@@ -48,7 +46,6 @@ public class UnSql2oModel {//MANAGER DAO ?
             con.createQuery("DROP TABLE "+ table).executeUpdate();
         }catch(Exception e){
             LOGGER.log(Level.SEVERE," {0}",e);
-            //log4jConf.log.log(org.apache.log4j.Priority.,"PB DELETE : {0}",e);
         }
     }
 
@@ -170,11 +167,11 @@ public class UnSql2oModel {//MANAGER DAO ?
      */
     public static void deleteElement(int val){
         //recuperation des fils
-        List<AListe> list_e = new LinkedList<>();
+        List<ToDo> list_e = new LinkedList<>();
         try(Connection con = sql2o.open()){
             Table table = con.createQuery("SELECT * FROM POSSEDE WHERE ELEMENT.idliste = :val").addParameter("val", val).executeAndFetchTable();
             for (Row row : table.rows()) {
-                AListe element = new UnElement();
+                ToDo element = new Element();
                 element.setId((int) row.getObject("id"));
             }
         }catch(Exception e){
@@ -182,11 +179,11 @@ public class UnSql2oModel {//MANAGER DAO ?
         }
         //suppression des fils et de leurs fils ....
         while(list_e.size() >0){
-            for (AListe a : list_e) {
+            for (ToDo a : list_e) {
                 try(Connection con = sql2o.open()){
                     Table table = con.createQuery("SELECT * FROM POSSEDE WHERE ELEMENT.idliste = :val").addParameter("val", a.getId()).executeAndFetchTable();
                     for (Row row : table.rows()) {
-                        AListe element = new UnElement();
+                        ToDo element = new Element();
                         element.setId((int) row.getObject("id"));
                     }
                 }catch(Exception e){
@@ -253,19 +250,19 @@ public class UnSql2oModel {//MANAGER DAO ?
      *
      * @return
      */
-    public static List<AListe> getAllElement(){
+    public static List<ToDo> getAllElement(){
         try(Connection con = sql2o.open()){
             Table table = con.createQuery("SELECT * FROM ELEMENT").executeAndFetchTable();
-            List<AListe> list_e = new LinkedList<>();
+            List<ToDo> list_e = new LinkedList<>();
             for (Row row : table.rows()) {
-                AListe element = new UnElement();
+                ToDo element = new Element();
                 element.setId((int) row.getObject("id"));
                 element.setTitre((String) row.getObject("titre"));
                 element.setDescription((String) row.getObject("description"));
                 element.setDateCreation((Date) row.getObject("datecreation"));
                 element.setDateDerModif((Date) row.getObject("datedermodif"));
-                if(element.getClass() == UnElement.class){
-                    ((UnElement) element).setEtat((int) row.getObject("etat"));
+                if(element.getClass() == Element.class){
+                    ((Element) element).setEtat((int) row.getObject("etat"));
                 }
                 list_e.add(element);
             }
@@ -285,7 +282,7 @@ public class UnSql2oModel {//MANAGER DAO ?
         try(Connection con = sql2o.open()){
             List<Integer> li = new ArrayList<>();
             Table table = con.createQuery("SELECT * FROM POSSEDE WHERE idliste = :val").addParameter("val", val).executeAndFetchTable();
-            List<AListe> list_e = new LinkedList<>();
+            List<ToDo> list_e = new LinkedList<>();
             for (Row row : table.rows()) {
                 li.add((int) row.getObject("id"));
             }
@@ -321,7 +318,7 @@ public class UnSql2oModel {//MANAGER DAO ?
         try(Connection con = sql2o.open()){
             List<Integer> li = new ArrayList<>();
             Table table = con.createQuery("SELECT * FROM POSSEDE WHERE id = :val").addParameter("val", val).executeAndFetchTable();
-            List<AListe> list_e = new LinkedList<>();
+            List<ToDo> list_e = new LinkedList<>();
             for (Row row : table.rows()) {
                 li.add((int) row.getObject("idListe"));
             }
@@ -337,11 +334,11 @@ public class UnSql2oModel {//MANAGER DAO ?
      * @param val
      * @return
      */
-    public static UnElement getElement(int val){
+    public static Element getElement(int val){
         try(Connection con = sql2o.open()){
             Table table = con.createQuery("SELECT * FROM ELEMENT where id = :val").addParameter("val", val).executeAndFetchTable();
             int v = 0;
-            UnElement l = new UnElement();
+            Element l = new Element();
             l.setId((int) table.rows().get(v).getObject("id"));
             //l.setIdListe((int) table.rows().get(v).getObject("idListe"));
             l.setTitre((String) table.rows().get(v).getObject("titre"));
@@ -362,19 +359,19 @@ public class UnSql2oModel {//MANAGER DAO ?
      * @param val
      * @return
      */
-    public static List<AListe> recherche(String val){
+    public static List<ToDo> recherche(String val){
         try(Connection con = sql2o.open()){
             Table table = con.createQuery("SELECT * FROM ELEMENT where titre REGEXP :val or  description REGEXP :val").addParameter("val", val).executeAndFetchTable();
-            List<AListe> list_e = new LinkedList<>();
+            List<ToDo> list_e = new LinkedList<>();
             for (Row row : table.rows()) {
-                AListe element = new UnElement();
+                ToDo element = new Element();
                 element.setId((int) row.getObject("id"));
                 element.setTitre((String) row.getObject("titre"));
                 element.setDescription((String) row.getObject("description"));
                 element.setDateCreation((Date) row.getObject("datecreation"));
                 element.setDateDerModif((Date) row.getObject("datedermodif"));
-                if(element.getClass() == UnElement.class){
-                    ((UnElement) element).setEtat((int) row.getObject("etat"));
+                if(element.getClass() == Element.class){
+                    ((Element) element).setEtat((int) row.getObject("etat"));
                 }
                 list_e.add(element);
             }

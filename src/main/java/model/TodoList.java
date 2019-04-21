@@ -1,6 +1,6 @@
 package model;
 
-import DAO.UnSql2oModel;
+import DAO.DAO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,16 +8,16 @@ import java.util.List;
 /**
  *
  */
-public class LaListe extends AListe{
+public class TodoList extends ToDo {
     //
-    private List<AListe> children = new ArrayList<>();
+    private List<ToDo> children = new ArrayList<>();
 
     /**
      *
      * @param composant
      * @return
      */
-    public boolean add(AListe composant){
+    public boolean add(ToDo composant){
         if(children.add(composant)){
             return true;
         }else{
@@ -30,7 +30,7 @@ public class LaListe extends AListe{
      * @param composant
      * @return
      */
-    public boolean remove(AListe composant){
+    public boolean remove(ToDo composant){
         if(children.remove(composant)){
             return true;
         }else{
@@ -42,7 +42,7 @@ public class LaListe extends AListe{
      *
      * @return
      */
-    public List<AListe> getListe() {
+    public List<ToDo> getListe() {
         return children;
     }
 
@@ -50,7 +50,7 @@ public class LaListe extends AListe{
      *
      * @param liste
      */
-    public void setListe(List<AListe> liste) {
+    public void setListe(List<ToDo> liste) {
         this.children = liste;
     }
 
@@ -61,10 +61,10 @@ public class LaListe extends AListe{
      * @param id
      * @return
      */
-    public static List<AListe> rechercheFils(UnSql2oModel sql, List<AListe> liste,int id){
-        List<AListe> l = new ArrayList<>();
+    public static List<ToDo> rechercheFils(DAO sql, List<ToDo> liste, int id){
+        List<ToDo> l = new ArrayList<>();
         for(int i : sql.getAllPossede(id)){
-            for (AListe a: liste) {
+            for (ToDo a: liste) {
                 if(a.getId() == i){
                     l.add(a);
                 }
@@ -80,10 +80,10 @@ public class LaListe extends AListe{
      * @param id
      * @return
      */
-    public static List<AListe> recherchePere(UnSql2oModel sql, List<AListe> liste, int id){
-        List<AListe> l = new ArrayList<>();
+    public static List<ToDo> recherchePere(DAO sql, List<ToDo> liste, int id){
+        List<ToDo> l = new ArrayList<>();
         for(int i : sql.getAllPossedant(id)){
-            for (AListe a: liste) {
+            for (ToDo a: liste) {
                 if(a.getId() == i){
                     l.add(a);
                 }

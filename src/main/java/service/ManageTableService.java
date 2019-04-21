@@ -1,10 +1,10 @@
 
-import DAO.UnSql2oModel;
+import DAO.DAO;
 
 
 public static class ManageTableService{
 
-    private static UnSql2oModel dao = new UnSql2oModel();
+    private static DAO dao = new DAO();
 
     public static void initDB(){
 

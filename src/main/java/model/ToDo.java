@@ -7,7 +7,7 @@ import java.util.List;
 /**
  *
  */
-public abstract class AListe {
+public abstract class ToDo {
 
     //
     private int id;

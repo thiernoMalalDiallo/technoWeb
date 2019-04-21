@@ -1,9 +1,9 @@
 package service;
 
-import DAO.UnSql2oModel;
+import DAO.DAO;
 import freemarker.template.Template;
-import model.AListe;
-import model.LaListe;
+import model.ToDo;
+import model.TodoList;
 import model.Tag;
 import spark.Request;
 import spark.Response;
@@ -16,7 +16,7 @@ import java.util.*;
 public  class ElementService{
 
     //
-    private LaListe list_e;
+    private TodoList list_e;
     public StringWriter getList(Configuration configuration){
         StringWriter writer = new StringWriter();
         try {
@@ -28,11 +28,11 @@ public  class ElementService{
         }
         return writer;
     }
-    public StringWriter rechercheList(Configuration configuration, Request request,UnSql2oModel model){
+    public StringWriter rechercheList(Configuration configuration, Request request, DAO model){
         StringWriter writer = new StringWriter();
         String recherche = request.queryParams("search");
-        Map<String, List<AListe>> params = new HashMap<>();
-        List<AListe> le = model.recherche(recherche);
+        Map<String, List<ToDo>> params = new HashMap<>();
+        List<ToDo> le = model.recherche(recherche);
         params.put("liste_e", le);
         params.put("liste_e_fils", null);
         try {
@@ -44,12 +44,12 @@ public  class ElementService{
         }
         return  writer;
     }
-    public StringWriter getAddList(Configuration configuration, UnSql2oModel model){
+    public StringWriter getAddList(Configuration configuration, DAO model){
         StringWriter writer = new StringWriter();
         try {
             Template template = configuration.getTemplate("templates/ajoutlist.ftl");//render("accueil.ftl", model);
             Map<String, Object> params = new HashMap<>();
-            List<AListe> le = model.getAllElement();
+            List<ToDo> le = model.getAllElement();
             List<String> ls = new ArrayList<>();
             params.put("liste_e", null);
             params.put("liste_e_pere", null);
@@ -62,11 +62,11 @@ public  class ElementService{
         return writer;
     }
 
-    public Object addList( UnSql2oModel model, Request request, Response response, LaListe list_e) {
+    public Object addList(DAO model, Request request, Response response, TodoList list_e) {
         String titre = request.queryParams("titre");
         String description = request.queryParams("description");
         String id = request.queryParams("idd");
-        AListe newListe = new LaListe();
+        ToDo newListe = new TodoList();
         if(titre != null || description != null){
             newListe.setTitre(titre);
             newListe.setDescription(description);
@@ -88,11 +88,11 @@ public  class ElementService{
         return "! add !";
     }
 
-    public StringWriter getALl(Configuration configuration, UnSql2oModel model) {
+    public StringWriter getALl(Configuration configuration, DAO model) {
         list_e.setListe(model.getAllElement());//update de la liste
         StringWriter writer = new StringWriter();
-        Map<String, List<AListe>> params = new HashMap<>();
-        List<AListe> le = rechercheMere(model);
+        Map<String, List<ToDo>> params = new HashMap<>();
+        List<ToDo> le = rechercheMere(model);
         params.put("liste_e", le);
         params.put("liste_e_fils", null);
         try {
@@ -106,24 +106,24 @@ public  class ElementService{
     }
 
 
-    public Object deleteList(Response response, Request request,UnSql2oModel model ) {
+    public Object deleteList(Response response, Request request, DAO model ) {
         int i = Integer.parseInt(replacePasInt(request.params(":name")));
-        AListe ee = model.getElement(i);
+        ToDo ee = model.getElement(i);
         model.deleteElement(ee.getId());
         response.redirect("/listes/"+i);
         return "SUPPRIMER name: " + request.params(":name") + " inexistante.(en cours)";
     }
 
-    public StringWriter getListUser(Configuration configuration, Request request, UnSql2oModel model){
+    public StringWriter getListUser(Configuration configuration, Request request, DAO model){
         list_e.setListe(model.getAllElement());//update de la liste
         StringWriter writer = new StringWriter();
         String s = replacePasInt(request.params(":name"));
         int i = -3;i = Integer.parseInt(replacePasInt(s));//request.params(":name")
-        AListe ee;ee = model.getElement(i);
-        Map<String, List<AListe>> params = new HashMap<>();
-        List<AListe> le = new ArrayList<>();le.add(ee);// future Liste<AListe>
-        List<AListe> lee = new ArrayList<>();//future Liste element
-        lee.addAll(LaListe.rechercheFils(model,list_e.getListe(),ee.getId()));
+        ToDo ee;ee = model.getElement(i);
+        Map<String, List<ToDo>> params = new HashMap<>();
+        List<ToDo> le = new ArrayList<>();le.add(ee);// future Liste<ToDo>
+        List<ToDo> lee = new ArrayList<>();//future Liste element
+        lee.addAll(TodoList.rechercheFils(model,list_e.getListe(),ee.getId()));
         params.put("liste_e", le);
         params.put("liste_e_fils", lee);
         try {
@@ -137,13 +137,13 @@ public  class ElementService{
     }
 
 
-    public Object updateListUser(Configuration configuration, Request request, UnSql2oModel model) {
+    public Object updateListUser(Configuration configuration, Request request, DAO model) {
         StringWriter writer = new StringWriter();
         int i = Integer.parseInt(replacePasInt(request.params(":name")));
-        AListe ee = model.getElement(i);
+        ToDo ee = model.getElement(i);
 
         Map<String, Object> params = new HashMap<>();
-        List<AListe> le = new ArrayList<>();le.add(ee);
+        List<ToDo> le = new ArrayList<>();le.add(ee);
         List<String> ls = new ArrayList<>();//ls.add("atest");ls.add("btest");ls.add("ctest");ls.add("dtest");ls.add("etest");
         for(Tag t: model.getAllTag(i)){
             ls.add(t.getTag()+",");
@@ -153,7 +153,7 @@ public  class ElementService{
 
         //pour ne pas afficher le input des tags pour les listes
         list_e.setListe(model.getAllElement());//update de la liste
-        if(LaListe.rechercheFils(model,list_e.getListe(),ee.getId()).size() > 0){
+        if(TodoList.rechercheFils(model,list_e.getListe(),ee.getId()).size() > 0){
             params.put("liste_tag", null);
         }else{
             params.put("liste_tag", ls);
@@ -169,7 +169,7 @@ public  class ElementService{
     }
 
 
-    public Object updateEelemntList(Request request,UnSql2oModel model,Response response) {
+    public Object updateEelemntList(Request request, DAO model, Response response) {
         String titre = request.queryParams("titre");//request.params("")
         String description = request.queryParams("description");//request.params("")
         String id = request.queryParams("idd");//request.params("")
@@ -191,7 +191,7 @@ public  class ElementService{
         }
         if(titre != null || description != null){
             //modification
-            AListe ee = model.getElement(i);
+            ToDo ee = model.getElement(i);
             model.updateElement(ee.getId(),ee.getId(), ee.getDateCreation(),d,titre,description,etat);
             model.deleteTagsElement(ee.getId()); //spprime tout les tags
             for(String s:ls){
@@ -204,13 +204,13 @@ public  class ElementService{
         return "!";
     }
 
-    public Object getEleementList(Configuration configuration, Request request, UnSql2oModel model) {
+    public Object getEleementList(Configuration configuration, Request request, DAO model) {
         StringWriter writer = new StringWriter();
         int i = -3;i = Integer.parseInt(replacePasInt(request.params(":name")));
-        AListe ee;ee = model.getElement(i);//inutile ?
+        ToDo ee;ee = model.getElement(i);//inutile ?
 
         Map<String, Object> params = new HashMap<>();
-        List<AListe> le = new ArrayList<>();le.add(ee);
+        List<ToDo> le = new ArrayList<>();le.add(ee);
         List<String> ls = new ArrayList<>();
         params.put("liste_e", null);
         params.put("liste_e_pere", le); //inutile ?
@@ -224,13 +224,13 @@ public  class ElementService{
         return writer;
     }
 
-    public Object addElementList(Request request,Response response,UnSql2oModel model) {
+    public Object addElementList(Request request, Response response, DAO model) {
         String titre = request.queryParams("titre");//request.params("")
         String description = request.queryParams("description");//request.params("")
         String id = replacePasInt(request.queryParams("idd"));
         String tags = request.queryParams("tags");
         String[] ls = tags.split(",");
-        AListe newListe = new LaListe();
+        ToDo newListe = new TodoList();
         int etat = 0;
         String afaire = request.queryParams("afaire");
         String fait = request.queryParams("fait");
@@ -265,25 +265,25 @@ public  class ElementService{
         //response.redirect("/listes/"+id);
         return "!";
     }
-    public Object getdeleteElementList(Request request,UnSql2oModel model,Response response) {
+    public Object getdeleteElementList(Request request, DAO model, Response response) {
         int i = Integer.parseInt(replacePasInt(request.params(":name")));
-        AListe ee = model.getElement(i);
+        ToDo ee = model.getElement(i);
         model.deleteElement(ee.getId());
         response.redirect("/listes/all");
         return "Liste supp: " + request.params(":name") + " inexistante.(en cours)";
     }
-    public Object deleteElementList(Request request,UnSql2oModel model,Response response) {
+    public Object deleteElementList(Request request, DAO model, Response response) {
         //request.params(":name")
         int i = Integer.parseInt(replacePasInt(request.params(":name")));
-        AListe ee = model.getElement(i);
+        ToDo ee = model.getElement(i);
         model.deleteElement(ee.getId());
         response.redirect("/listes/all");
         return "Liste supp: " + request.params(":name") + " inexistante.";
     }
-    private List<AListe> rechercheMere(UnSql2oModel model){
-        List<AListe> liste = new ArrayList<>();
-        for(AListe a: list_e.getListe()){
-            List<AListe> l =LaListe.recherchePere(model,list_e.getListe(),a.getId());
+    private List<ToDo> rechercheMere(DAO model){
+        List<ToDo> liste = new ArrayList<>();
+        for(ToDo a: list_e.getListe()){
+            List<ToDo> l = TodoList.recherchePere(model,list_e.getListe(),a.getId());
             if(l.size() <= 0){
                 liste.add(a);
             }
